@@ -144,7 +144,7 @@ def generar_hitos(semanas, dias, hoy):
         fecha_1 = hoy + timedelta(days=days_to_1)
         fecha_1_str = fecha_1.strftime('%d/%m/%Y')
         edad = "1. Semana 11"
-        detalles = f"{fecha_1_str} favor realizar los laboratorios de primer trimestre PaPP-a, HCG Libre, PLGF, TSH, T4L y T3L"
+        detalles = f"{fecha_1_str}\nfavor realizar los laboratorios de primer trimestre PaPP-a, HCG Libre, PLGF, TSH, T4L y T3L"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     start_2 = 12 * 7 + 0
@@ -205,7 +205,7 @@ def generar_hitos(semanas, dias, hoy):
         fecha_5_str = fecha_5.strftime('%d/%m/%Y')
         day_5 = days_of_week[fecha_5.weekday()]
         edad = "5. Semana 37"
-        detalles = f"{fecha_5_str} que es {day_5}"
+        detalles = f"{fecha_5_str}\nque es {day_5}"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_6 = 39 * 7 + 0
@@ -218,7 +218,7 @@ def generar_hitos(semanas, dias, hoy):
         fecha_6_str = fecha_6.strftime('%d/%m/%Y')
         day_6 = days_of_week[fecha_6.weekday()]
         edad = "6. Semana 39"
-        detalles = f"{fecha_6_str} que es {day_6}"
+        detalles = f"{fecha_6_str}\nque es {day_6}"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_7 = 40 * 7 + 0
@@ -231,7 +231,7 @@ def generar_hitos(semanas, dias, hoy):
         fecha_7_str = fecha_7.strftime('%d/%m/%Y')
         day_7 = days_of_week[fecha_7.weekday()]
         edad = "7. Semana 40"
-        detalles = f"{fecha_7_str} que es {day_7}\nanotar fecha probable de parto"
+        detalles = f"{fecha_7_str}\nque es {day_7}\nanotar fecha probable de parto"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_8 = 41 * 7 + 0
@@ -251,6 +251,30 @@ def generar_hitos(semanas, dias, hoy):
 def main():
     st.set_page_config(page_title="Calculadora de Edad Gestacional", page_icon="👶", layout="centered")
     
+    # Aplicar paleta de colores azul
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background-color: #e6f0fa;
+        }
+        .stButton>button {
+            background-color: #1e90ff;
+            color: white;
+            border: 2px solid #1e90ff;
+        }
+        .stButton>button:hover {
+            background-color: #104e8b;
+            border: 2px solid #104e8b;
+        }
+        .stRadio>label {
+            color: #1e90ff;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
     st.title("Calculadora de Edad Gestacional - Consulta de Alto Riesgo Hospital de Liberia")
     st.markdown("Selecciona un método para calcular la edad gestacional y obtener las fechas de hitos clave del embarazo.")
     
@@ -259,6 +283,15 @@ def main():
         st.session_state.calculated = False
         st.session_state.mensaje = ""
         st.session_state.hitos = []
+        st.session_state.dia_fur = 1
+        st.session_state.mes_fur = "Enero"
+        st.session_state.ano_fur = 2025
+        st.session_state.dia_ultra = 1
+        st.session_state.mes_ultra = "Enero"
+        st.session_state.ano_ultra = 2025
+        st.session_state.dia_fpp = 1
+        st.session_state.mes_fpp = "Enero"
+        st.session_state.ano_fpp = 2025
     
     if not st.session_state.calculated:
         # Selección con radio buttons para más elegancia
@@ -280,14 +313,14 @@ def main():
             st.subheader("Fecha de última regla")
             col1, col2, col3 = st.columns(3)
             with col1:
-                dia_fur = st.selectbox("Día", list(range(1, 32)))
+                st.session_state.dia_fur = st.selectbox("Día", list(range(1, 32)), key="dia_fur", index=st.session_state.dia_fur-1)
             with col2:
-                mes_fur = st.selectbox("Mes", list(months_map.keys()))
+                st.session_state.mes_fur = st.selectbox("Mes", list(months_map.keys()), key="mes_fur", index=list(months_map.keys()).index(st.session_state.mes_fur))
             with col3:
-                ano_fur = st.selectbox("Año", list(range(2020, 2051)))
+                st.session_state.ano_fur = st.selectbox("Año", list(range(2020, 2051)), key="ano_fur", index=st.session_state.ano_fur-2020)
             
             if st.button("Calcular", key="calcular_1"):
-                fecha_ultima_regla, error = build_date(dia_fur, mes_fur, ano_fur)
+                fecha_ultima_regla, error = build_date(st.session_state.dia_fur, st.session_state.mes_fur, st.session_state.ano_fur)
                 if error:
                     st.error(error)
                 elif fecha_ultima_regla:
@@ -305,17 +338,17 @@ def main():
             st.subheader("Fecha del ultrasonido")
             col1, col2, col3 = st.columns(3)
             with col1:
-                dia_ultra = st.selectbox("Día", list(range(1, 32)), key="dia_ultra")
+                st.session_state.dia_ultra = st.selectbox("Día", list(range(1, 32)), key="dia_ultra", index=st.session_state.dia_ultra-1)
             with col2:
-                mes_ultra = st.selectbox("Mes", list(months_map.keys()), key="mes_ultra")
+                st.session_state.mes_ultra = st.selectbox("Mes", list(months_map.keys()), key="mes_ultra", index=list(months_map.keys()).index(st.session_state.mes_ultra))
             with col3:
-                ano_ultra = st.selectbox("Año", list(range(2020, 2051)), key="ano_ultra")
+                st.session_state.ano_ultra = st.selectbox("Año", list(range(2020, 2051)), key="ano_ultra", index=st.session_state.ano_ultra-2020)
             
-            semanas_ultra = st.number_input("Semanas de edad gestacional en el ultrasonido (número entero)", min_value=0, step=1)
-            dias_ultra = st.number_input("Días de edad gestacional en el ultrasonido (0 a 6)", min_value=0, max_value=6, step=1)
+            semanas_ultra = st.number_input("Semanas de edad gestacional en el ultrasonido (número entero)", min_value=0, step=1, key="semanas_ultra")
+            dias_ultra = st.number_input("Días de edad gestacional en el ultrasonido (0 a 6)", min_value=0, max_value=6, step=1, key="dias_ultra")
             
             if st.button("Calcular", key="calcular_2"):
-                fecha_ultrasonido, error = build_date(dia_ultra, mes_ultra, ano_ultra)
+                fecha_ultrasonido, error = build_date(st.session_state.dia_ultra, st.session_state.mes_ultra, st.session_state.ano_ultra)
                 if error:
                     st.error(error)
                 elif fecha_ultrasonido:
@@ -333,14 +366,14 @@ def main():
             st.subheader("Fecha probable de parto")
             col1, col2, col3 = st.columns(3)
             with col1:
-                dia_fpp = st.selectbox("Día", list(range(1, 32)), key="dia_fpp")
+                st.session_state.dia_fpp = st.selectbox("Día", list(range(1, 32)), key="dia_fpp", index=st.session_state.dia_fpp-1)
             with col2:
-                mes_fpp = st.selectbox("Mes", list(months_map.keys()), key="mes_fpp")
+                st.session_state.mes_fpp = st.selectbox("Mes", list(months_map.keys()), key="mes_fpp", index=list(months_map.keys()).index(st.session_state.mes_fpp))
             with col3:
-                ano_fpp = st.selectbox("Año", list(range(2020, 2051)), key="ano_fpp")
+                st.session_state.ano_fpp = st.selectbox("Año", list(range(2020, 2051)), key="ano_fpp", index=st.session_state.ano_fpp-2020)
             
             if st.button("Calcular", key="calcular_3"):
-                fecha_probable_parto, error = build_date(dia_fpp, mes_fpp, ano_fpp)
+                fecha_probable_parto, error = build_date(st.session_state.dia_fpp, st.session_state.mes_fpp, st.session_state.ano_fpp)
                 if error:
                     st.error(error)
                 elif fecha_probable_parto:
@@ -355,8 +388,8 @@ def main():
                     st.error("Por favor, seleccione una fecha válida.")
         
         elif option.startswith("4"):
-            semanas_manual = st.number_input("Semanas de edad gestacional actual (número entero)", min_value=0, step=1)
-            dias_manual = st.number_input("Días de edad gestacional actual (0 a 6)", min_value=0, max_value=6, step=1)
+            semanas_manual = st.number_input("Semanas de edad gestacional actual (número entero)", min_value=0, step=1, key="semanas_manual")
+            dias_manual = st.number_input("Días de edad gestacional actual (0 a 6)", min_value=0, max_value=6, step=1, key="dias_manual")
             if st.button("Calcular", key="calcular_4"):
                 semanas, dias, mensaje, fpp_str = calcular_desde_manual(semanas_manual, dias_manual)
                 if "Error" in mensaje:
@@ -379,9 +412,9 @@ def main():
         st.dataframe(
             df.style.set_table_styles(
                 [
-                    {'selector': 'tr:hover', 'props': [('background-color', '#ffff99')]},
-                    {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white'), ('font-size', '20px'), ('padding', '12px'), ('text-align', 'left')]},
-                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '12px'), ('font-size', '18px'), ('white-space', 'normal'), ('word-wrap', 'break-word'), ('text-align', 'left'), ('max-width', '400px')]},
+                    {'selector': 'tr:hover', 'props': [('background-color', '#e6f0fa')]},
+                    {'selector': 'th', 'props': [('background-color', '#1e90ff'), ('color', 'white'), ('font-size', '26px'), ('padding', '15px'), ('border', '2px solid #104e8b'), ('text-align', 'left')]},
+                    {'selector': 'td', 'props': [('border', '2px solid #104e8b'), ('padding', '15px'), ('font-size', '26px'), ('white-space', 'normal'), ('word-wrap', 'break-word'), ('text-align', 'left'), ('max-width', '500px'), ('min-height', '80px'), ('line-height', '1.6')]},
                 ]
             ),
             hide_index=True,
