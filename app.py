@@ -1,7 +1,6 @@
 import streamlit as st
 from datetime import datetime, timedelta
 import pandas as pd
-import re
 
 days_of_week = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
 
@@ -138,20 +137,20 @@ def generar_hitos(semanas, dias, hoy):
     
     target_1 = 11 * 7 + 0
     if current_total > target_1:
-        edad = "1. Edad gestacional semana 11"
+        edad = "1. Semana 11"
         detalles = "ya se superó esta edad gestacional"
     else:
         days_to_1 = target_1 - current_total
         fecha_1 = hoy + timedelta(days=days_to_1)
         fecha_1_str = fecha_1.strftime('%d/%m/%Y')
-        edad = "1. Edad gestacional semana 11"
+        edad = "1. Semana 11"
         detalles = f"{fecha_1_str} favor realizar los laboratorios de primer trimestre PaPP-a, HCG Libre, PLGF, TSH, T4L y T3L"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     start_2 = 12 * 7 + 0
     end_2 = 13 * 7 + 6
     if current_total > end_2:
-        edad = "2. Edad gestacional semana 12 a semana 13 y 6 días"
+        edad = "2. Semana 12 a semana 13 y 6 días"
         detalles = "ya se superó esta edad gestacional"
     else:
         days_to_start_2 = start_2 - current_total
@@ -160,14 +159,14 @@ def generar_hitos(semanas, dias, hoy):
         days_to_end_2 = end_2 - current_total
         end_date_2 = hoy + timedelta(days=days_to_end_2)
         end_2_str = end_date_2.strftime('%d/%m/%Y')
-        edad = "2. Edad gestacional semana 12 a semana 13 y 6 días"
+        edad = "2. Semana 12 a semana 13 y 6 días"
         detalles = f"desde {start_2_str} hasta {end_2_str} tamízaje de Primer Trimestre, recuerde llevar resultados de exámenes solicitados, favor no cambie la fecha de esta cita"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     start_3 = 22 * 7 + 0
     end_3 = 24 * 7 + 6
     if current_total > end_3:
-        edad = "3. Edad gestacional semana 22 a semana 24 y 6 días"
+        edad = "3. Semana 22 a semana 24 y 6 días"
         detalles = "ya se superó esta edad gestacional"
     else:
         days_to_start_3 = start_3 - current_total
@@ -176,14 +175,14 @@ def generar_hitos(semanas, dias, hoy):
         days_to_end_3 = end_3 - current_total
         end_date_3 = hoy + timedelta(days=days_to_end_3)
         end_3_str = end_date_3.strftime('%d/%m/%Y')
-        edad = "3. Edad gestacional semana 22 a semana 24 y 6 días"
+        edad = "3. Semana 22 a semana 24 y 6 días"
         detalles = f"desde {start_3_str} hasta {end_3_str} tamízaje de Anatómico y de Cardiopatía congénita, favor no perder esta cita"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     start_4 = 34 * 7 + 0
     end_4 = 35 * 7 + 6
     if current_total > end_4:
-        edad = "4. Edad gestacional semana 34 a 35 semanas y 6 días"
+        edad = "4. Semana 34 a 35 semanas y 6 días"
         detalles = "ya se superó esta edad gestacional"
     else:
         days_to_start_4 = start_4 - current_total
@@ -192,58 +191,58 @@ def generar_hitos(semanas, dias, hoy):
         days_to_end_4 = end_4 - current_total
         end_date_4 = hoy + timedelta(days=days_to_end_4)
         end_4_str = end_date_4.strftime('%d/%m/%Y')
-        edad = "4. Edad gestacional semana 34 a 35 semanas y 6 días"
+        edad = "4. Semana 34 a 35 semanas y 6 días"
         detalles = f"desde {start_4_str} hasta {end_4_str} Control de crecimiento fetal"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_5 = 37 * 7 + 0
     if current_total > target_5:
-        edad = "5. Edad gestacional semana 37"
+        edad = "5. Semana 37"
         detalles = "ya se superó esta edad gestacional"
     else:
         days_to_5 = target_5 - current_total
         fecha_5 = hoy + timedelta(days=days_to_5)
         fecha_5_str = fecha_5.strftime('%d/%m/%Y')
         day_5 = days_of_week[fecha_5.weekday()]
-        edad = "5. Edad gestacional semana 37"
+        edad = "5. Semana 37"
         detalles = f"{fecha_5_str} que es {day_5}"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_6 = 39 * 7 + 0
     if current_total > target_6:
-        edad = "6. Edad gestacional semana 39"
+        edad = "6. Semana 39"
         detalles = "ya se superó esta edad gestacional"
     else:
         days_to_6 = target_6 - current_total
         fecha_6 = hoy + timedelta(days=days_to_6)
         fecha_6_str = fecha_6.strftime('%d/%m/%Y')
         day_6 = days_of_week[fecha_6.weekday()]
-        edad = "6. Edad gestacional semana 39"
+        edad = "6. Semana 39"
         detalles = f"{fecha_6_str} que es {day_6}"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_7 = 40 * 7 + 0
     if current_total > target_7:
-        edad = "7. Edad gestacional semana 40"
+        edad = "7. Semana 40"
         detalles = "ya se superó esta edad gestacional"
     else:
         days_to_7 = target_7 - current_total
         fecha_7 = hoy + timedelta(days=days_to_7)
         fecha_7_str = fecha_7.strftime('%d/%m/%Y')
         day_7 = days_of_week[fecha_7.weekday()]
-        edad = "7. Edad gestacional semana 40"
+        edad = "7. Semana 40"
         detalles = f"{fecha_7_str} que es {day_7} anotar fecha probable de parto"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_8 = 41 * 7 + 0
     if current_total > target_8:
-        edad = "8. Edad gestacional semana 41"
+        edad = "8. Semana 41"
         detalles = "ya se superó esta edad gestacional"
     else:
         days_to_8 = target_8 - current_total
         fecha_8 = hoy + timedelta(days=days_to_8)
         fecha_8_str = fecha_8.strftime('%d/%m/%Y')
-        edad = "8. Edad gestacional semana 41"
+        edad = "8. Semana 41"
         detalles = f"{fecha_8_str}"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
@@ -382,7 +381,7 @@ def main():
                 [
                     {'selector': 'tr:hover', 'props': [('background-color', '#ffff99')]},
                     {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white'), ('font-size', '20px'), ('padding', '12px'), ('text-align', 'left')]},
-                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '12px'), ('font-size', '18px'), ('white-space', 'normal'), ('word-wrap', 'break-word'), ('text-align', 'left'), ('max-width', '300px')]},
+                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '12px'), ('font-size', '18px'), ('white-space', 'normal'), ('word-wrap', 'break-word'), ('text-align', 'left'), ('max-width', '400px')]},
                 ]
             ),
             hide_index=True,
