@@ -160,7 +160,7 @@ def generar_hitos(semanas, dias, hoy):
         end_date_2 = hoy + timedelta(days=days_to_end_2)
         end_2_str = end_date_2.strftime('%d/%m/%Y')
         edad = "2. Semana 12 a semana 13 y 6 días"
-        detalles = f"desde {start_2_str} hasta {end_2_str} tamízaje de Primer Trimestre, recuerde llevar resultados de exámenes solicitados, favor no cambie la fecha de esta cita"
+        detalles = f"desde {start_2_str} hasta {end_2_str}\ntamízaje de Primer Trimestre, recuerde llevar resultados de exámenes solicitados, favor no cambie la fecha de esta cita"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     start_3 = 22 * 7 + 0
@@ -176,7 +176,7 @@ def generar_hitos(semanas, dias, hoy):
         end_date_3 = hoy + timedelta(days=days_to_end_3)
         end_3_str = end_date_3.strftime('%d/%m/%Y')
         edad = "3. Semana 22 a semana 24 y 6 días"
-        detalles = f"desde {start_3_str} hasta {end_3_str} tamízaje de Anatómico y de Cardiopatía congénita, favor no perder esta cita"
+        detalles = f"desde {start_3_str} hasta {end_3_str}\ntamízaje de Anatómico y de Cardiopatía congénita, favor no perder esta cita"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     start_4 = 34 * 7 + 0
@@ -192,7 +192,7 @@ def generar_hitos(semanas, dias, hoy):
         end_date_4 = hoy + timedelta(days=days_to_end_4)
         end_4_str = end_date_4.strftime('%d/%m/%Y')
         edad = "4. Semana 34 a 35 semanas y 6 días"
-        detalles = f"desde {start_4_str} hasta {end_4_str} Control de crecimiento fetal"
+        detalles = f"desde {start_4_str} hasta {end_4_str}\nControl de crecimiento fetal"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_5 = 37 * 7 + 0
@@ -231,7 +231,7 @@ def generar_hitos(semanas, dias, hoy):
         fecha_7_str = fecha_7.strftime('%d/%m/%Y')
         day_7 = days_of_week[fecha_7.weekday()]
         edad = "7. Semana 40"
-        detalles = f"{fecha_7_str} que es {day_7} anotar fecha probable de parto"
+        detalles = f"{fecha_7_str} que es {day_7}\nanotar fecha probable de parto"
     hitos.append({"Edad Gestacional": edad, "Detalles": detalles})
     
     target_8 = 41 * 7 + 0
@@ -381,9 +381,9 @@ def main():
                 [
                     {'selector': 'tr:hover', 'props': [('background-color', '#ffff99')]},
                     {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white'), ('font-size', '20px'), ('padding', '12px'), ('text-align', 'left')]},
-                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '12px'), ('font-size', '18px'), ('white-space', 'normal'), ('word-wrap', 'break-word'), ('text-align', 'left'), ('max-width', '400px')]},
+                    {'selector': 'td', 'props': [('border', '2px solid #ddd'), ('padding', '15px'), ('font-size', '18px'), ('white-space', 'normal'), ('word-wrap', 'break-word'), ('text-align', 'left'), ('max-width', '400px'), ('line-height', '1.5')]},
                 ]
-            ),
+            ).set_properties(**{'min-height': '60px'}),
             hide_index=True,
             use_container_width=True
         )
