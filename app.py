@@ -253,6 +253,7 @@ def main():
         hoy = datetime.now()
         
         if option.startswith("1"):
+            st.subheader("Fecha de última regla")
             col1, col2, col3 = st.columns(3)
             with col1:
                 dia_fur = st.selectbox("Día", list(range(1, 32)))
@@ -356,8 +357,8 @@ def main():
             df.style.set_table_styles(
                 [
                     {'selector': 'tr:hover', 'props': [('background-color', '#ffff99')]},
-                    {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white'), ('font-size', '18px')]},
-                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '12px'), ('font-size', '16px')]},
+                    {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white'), ('font-size', '20px')]},
+                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '12px'), ('font-size', '18px')]},
                 ]
             ).set_properties(**{'text-align': 'left'}),
             hide_index=True,
