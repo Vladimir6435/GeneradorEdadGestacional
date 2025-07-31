@@ -381,9 +381,9 @@ def main():
                 [
                     {'selector': 'tr:hover', 'props': [('background-color', '#ffff99')]},
                     {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white'), ('font-size', '20px'), ('padding', '12px'), ('text-align', 'left')]},
-                    {'selector': 'td', 'props': [('border', '2px solid #ddd'), ('padding', '15px'), ('font-size', '18px'), ('white-space', 'normal'), ('word-wrap', 'break-word'), ('text-align', 'left'), ('max-width', '400px'), ('line-height', '1.5')]},
+                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '12px'), ('font-size', '18px'), ('white-space', 'normal'), ('word-wrap', 'break-word'), ('text-align', 'left'), ('max-width', '400px')]},
                 ]
-            ).set_properties(**{'min-height': '60px'}),
+            ),
             hide_index=True,
             use_container_width=True
         )
