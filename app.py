@@ -4,6 +4,20 @@ import pandas as pd
 
 days_of_week = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
 
+months_map = {
+    "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5, "Junio": 6,
+    "Julio": 7, "Agosto": 8, "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
+}
+
+def build_date(dia, mes_str, ano):
+    mes = months_map.get(mes_str, 0)
+    if mes == 0 or dia < 1 or dia > 31 or ano < 2020 or ano > 2050:
+        return None, "Error: Datos de fecha inválidos o año parece ser equivocado."
+    try:
+        return f"{dia:02d}/{mes:02d}/{ano}", None
+    except ValueError:
+        return None, "Error: Fecha inválida."
+
 def calcular_edad_gestacional(fecha_ultima_regla, fecha_actual=None):
     try:
         fur = datetime.strptime(fecha_ultima_regla, '%d/%m/%Y')
@@ -239,49 +253,90 @@ def main():
         hoy = datetime.now()
         
         if option.startswith("1"):
-            fecha_ultima_regla = st.text_input("Ingrese la fecha de última regla (DD/MM/YYYY)", placeholder="Ej: 01/01/2025")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                dia_fur = st.selectbox("Día", list(range(1, 32)))
+            with col2:
+                mes_fur = st.selectbox("Mes", list(months_map.keys()))
+            with col3:
+                ano_fur = st.selectbox("Año", list(range(2020, 2051)))
+            
             if st.button("Calcular", key="calcular_1"):
-                if fecha_ultima_regla:
+                fecha_ultima_regla, error = build_date(dia_fur, mes_fur, ano_fur)
+                if error:
+                    st.error(error)
+                elif fecha_ultima_regla:
                     semanas, dias, mensaje, fpp_str = calcular_edad_gestacional(fecha_ultima_regla)
-                    if "Error" not in mensaje:
+                    if "Error" in mensaje:
+                        st.error(mensaje)
+                    else:
                         st.session_state.hitos = generar_hitos(semanas, dias, hoy)
                         st.session_state.mensaje = mensaje
                         st.session_state.calculated = True
                 else:
-                    st.error("Por favor, ingrese una fecha válida.")
+                    st.error("Por favor, seleccione una fecha válida.")
         
         elif option.startswith("2"):
-            fecha_ultrasonido = st.text_input("Ingrese la fecha del ultrasonido (DD/MM/YYYY)", placeholder="Ej: 01/01/2025")
+            st.subheader("Fecha del ultrasonido")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                dia_ultra = st.selectbox("Día", list(range(1, 32)), key="dia_ultra")
+            with col2:
+                mes_ultra = st.selectbox("Mes", list(months_map.keys()), key="mes_ultra")
+            with col3:
+                ano_ultra = st.selectbox("Año", list(range(2020, 2051)), key="ano_ultra")
+            
             semanas_ultra = st.number_input("Semanas de edad gestacional en el ultrasonido (número entero)", min_value=0, step=1)
             dias_ultra = st.number_input("Días de edad gestacional en el ultrasonido (0 a 6)", min_value=0, max_value=6, step=1)
+            
             if st.button("Calcular", key="calcular_2"):
-                if fecha_ultrasonido:
+                fecha_ultrasonido, error = build_date(dia_ultra, mes_ultra, ano_ultra)
+                if error:
+                    st.error(error)
+                elif fecha_ultrasonido:
                     semanas, dias, mensaje, fpp_str = calcular_desde_ultrasonido(fecha_ultrasonido, semanas_ultra, dias_ultra)
-                    if "Error" not in mensaje:
+                    if "Error" in mensaje:
+                        st.error(mensaje)
+                    else:
                         st.session_state.hitos = generar_hitos(semanas, dias, hoy)
                         st.session_state.mensaje = mensaje
                         st.session_state.calculated = True
                 else:
-                    st.error("Por favor, ingrese una fecha válida.")
+                    st.error("Por favor, seleccione una fecha válida.")
         
         elif option.startswith("3"):
-            fecha_probable_parto = st.text_input("Ingrese la fecha probable de parto (DD/MM/YYYY)", placeholder="Ej: 01/10/2025")
+            st.subheader("Fecha probable de parto")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                dia_fpp = st.selectbox("Día", list(range(1, 32)), key="dia_fpp")
+            with col2:
+                mes_fpp = st.selectbox("Mes", list(months_map.keys()), key="mes_fpp")
+            with col3:
+                ano_fpp = st.selectbox("Año", list(range(2020, 2051)), key="ano_fpp")
+            
             if st.button("Calcular", key="calcular_3"):
-                if fecha_probable_parto:
+                fecha_probable_parto, error = build_date(dia_fpp, mes_fpp, ano_fpp)
+                if error:
+                    st.error(error)
+                elif fecha_probable_parto:
                     semanas, dias, mensaje, fpp_str = calcular_desde_fpp(fecha_probable_parto)
-                    if "Error" not in mensaje:
+                    if "Error" in mensaje:
+                        st.error(mensaje)
+                    else:
                         st.session_state.hitos = generar_hitos(semanas, dias, hoy)
                         st.session_state.mensaje = mensaje
                         st.session_state.calculated = True
                 else:
-                    st.error("Por favor, ingrese una fecha válida.")
+                    st.error("Por favor, seleccione una fecha válida.")
         
         elif option.startswith("4"):
             semanas_manual = st.number_input("Semanas de edad gestacional actual (número entero)", min_value=0, step=1)
             dias_manual = st.number_input("Días de edad gestacional actual (0 a 6)", min_value=0, max_value=6, step=1)
             if st.button("Calcular", key="calcular_4"):
                 semanas, dias, mensaje, fpp_str = calcular_desde_manual(semanas_manual, dias_manual)
-                if "Error" not in mensaje:
+                if "Error" in mensaje:
+                    st.error(mensaje)
+                else:
                     st.session_state.hitos = generar_hitos(semanas, dias, hoy)
                     st.session_state.mensaje = mensaje
                     st.session_state.calculated = True
@@ -296,13 +351,13 @@ def main():
         hitos_data = [{"Hito": hito} for hito in st.session_state.hitos]
         df = pd.DataFrame(hitos_data)
         
-        # Estilizar la tabla
+        # Estilizar la tabla con letras más grandes
         st.dataframe(
             df.style.set_table_styles(
                 [
                     {'selector': 'tr:hover', 'props': [('background-color', '#ffff99')]},
-                    {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white')]},
-                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '8px')]},
+                    {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white'), ('font-size', '18px')]},
+                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '12px'), ('font-size', '16px')]},
                 ]
             ).set_properties(**{'text-align': 'left'}),
             hide_index=True,
