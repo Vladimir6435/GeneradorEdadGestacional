@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime, timedelta
+import pandas as pd
 
 days_of_week = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
 
@@ -212,63 +213,108 @@ def generar_hitos(semanas, dias, hoy):
 def main():
     st.set_page_config(page_title="Calculadora de Edad Gestacional", page_icon="👶", layout="centered")
     
-    st.title("Calculadora de Edad Gestacional")
-    st.markdown("Selecciona una opción para calcular la edad gestacional y obtener las fechas de hitos clave del embarazo.")
+    st.title("Calculadora de Edad Gestacional - Consulta de Alto Riesgo Hospital de Liberia")
+    st.markdown("Selecciona un método para calcular la edad gestacional y obtener las fechas de hitos clave del embarazo.")
     
-    option = st.selectbox(
-        "Método de cálculo",
-        [
-            "1. A partir de la fecha de última regla",
-            "2. A partir de un ultrasonido previo",
-            "3. A partir de la fecha probable de parto",
-            "4. Introducción de edad gestacional manual"
-        ]
-    )
+    # Inicializar estado de sesión
+    if 'calculated' not in st.session_state:
+        st.session_state.calculated = False
+        st.session_state.mensaje = ""
+        st.session_state.hitos = []
     
-    semanas, dias, mensaje, fpp_str = 0, 0, "", None
-    hoy = datetime.now()
+    if not st.session_state.calculated:
+        # Selección con radio buttons para más elegancia
+        option = st.radio(
+            "Método de cálculo",
+            [
+                "1. A partir de la fecha de última regla",
+                "2. A partir de un ultrasonido previo",
+                "3. A partir de la fecha probable de parto",
+                "4. Introducción de edad gestacional manual"
+            ],
+            horizontal=False
+        )
+        
+        semanas, dias, mensaje, fpp_str = 0, 0, "", None
+        hoy = datetime.now()
+        
+        if option.startswith("1"):
+            fecha_ultima_regla = st.text_input("Ingrese la fecha de última regla (DD/MM/YYYY)", placeholder="Ej: 01/01/2025")
+            if st.button("Calcular", key="calcular_1"):
+                if fecha_ultima_regla:
+                    semanas, dias, mensaje, fpp_str = calcular_edad_gestacional(fecha_ultima_regla)
+                    if "Error" not in mensaje:
+                        st.session_state.hitos = generar_hitos(semanas, dias, hoy)
+                        st.session_state.mensaje = mensaje
+                        st.session_state.calculated = True
+                else:
+                    st.error("Por favor, ingrese una fecha válida.")
+        
+        elif option.startswith("2"):
+            fecha_ultrasonido = st.text_input("Ingrese la fecha del ultrasonido (DD/MM/YYYY)", placeholder="Ej: 01/01/2025")
+            semanas_ultra = st.number_input("Semanas de edad gestacional en el ultrasonido (número entero)", min_value=0, step=1)
+            dias_ultra = st.number_input("Días de edad gestacional en el ultrasonido (0 a 6)", min_value=0, max_value=6, step=1)
+            if st.button("Calcular", key="calcular_2"):
+                if fecha_ultrasonido:
+                    semanas, dias, mensaje, fpp_str = calcular_desde_ultrasonido(fecha_ultrasonido, semanas_ultra, dias_ultra)
+                    if "Error" not in mensaje:
+                        st.session_state.hitos = generar_hitos(semanas, dias, hoy)
+                        st.session_state.mensaje = mensaje
+                        st.session_state.calculated = True
+                else:
+                    st.error("Por favor, ingrese una fecha válida.")
+        
+        elif option.startswith("3"):
+            fecha_probable_parto = st.text_input("Ingrese la fecha probable de parto (DD/MM/YYYY)", placeholder="Ej: 01/10/2025")
+            if st.button("Calcular", key="calcular_3"):
+                if fecha_probable_parto:
+                    semanas, dias, mensaje, fpp_str = calcular_desde_fpp(fecha_probable_parto)
+                    if "Error" not in mensaje:
+                        st.session_state.hitos = generar_hitos(semanas, dias, hoy)
+                        st.session_state.mensaje = mensaje
+                        st.session_state.calculated = True
+                else:
+                    st.error("Por favor, ingrese una fecha válida.")
+        
+        elif option.startswith("4"):
+            semanas_manual = st.number_input("Semanas de edad gestacional actual (número entero)", min_value=0, step=1)
+            dias_manual = st.number_input("Días de edad gestacional actual (0 a 6)", min_value=0, max_value=6, step=1)
+            if st.button("Calcular", key="calcular_4"):
+                semanas, dias, mensaje, fpp_str = calcular_desde_manual(semanas_manual, dias_manual)
+                if "Error" not in mensaje:
+                    st.session_state.hitos = generar_hitos(semanas, dias, hoy)
+                    st.session_state.mensaje = mensaje
+                    st.session_state.calculated = True
     
-    if option.startswith("1"):
-        fecha_ultima_regla = st.text_input("Ingrese la fecha de última regla (DD/MM/YYYY)", placeholder="Ej: 01/01/2025")
-        if st.button("Calcular", key="calcular_1"):
-            if fecha_ultima_regla:
-                semanas, dias, mensaje, fpp_str = calcular_edad_gestacional(fecha_ultima_regla)
-            else:
-                st.error("Por favor, ingrese una fecha válida.")
-    
-    elif option.startswith("2"):
-        fecha_ultrasonido = st.text_input("Ingrese la fecha del ultrasonido (DD/MM/YYYY)", placeholder="Ej: 01/01/2025")
-        semanas_ultra = st.number_input("Semanas de edad gestacional en el ultrasonido (número entero)", min_value=0, step=1)
-        dias_ultra = st.number_input("Días de edad gestacional en el ultrasonido (0 a 6)", min_value=0, max_value=6, step=1)
-        if st.button("Calcular", key="calcular_2"):
-            if fecha_ultrasonido:
-                semanas, dias, mensaje, fpp_str = calcular_desde_ultrasonido(fecha_ultrasonido, semanas_ultra, dias_ultra)
-            else:
-                st.error("Por favor, ingrese una fecha válida.")
-    
-    elif option.startswith("3"):
-        fecha_probable_parto = st.text_input("Ingrese la fecha probable de parto (DD/MM/YYYY)", placeholder="Ej: 01/10/2025")
-        if st.button("Calcular", key="calcular_3"):
-            if fecha_probable_parto:
-                semanas, dias, mensaje, fpp_str = calcular_desde_fpp(fecha_probable_parto)
-            else:
-                st.error("Por favor, ingrese una fecha válida.")
-    
-    elif option.startswith("4"):
-        semanas_manual = st.number_input("Semanas de edad gestacional actual (número entero)", min_value=0, step=1)
-        dias_manual = st.number_input("Días de edad gestacional actual (0 a 6)", min_value=0, max_value=6, step=1)
-        if st.button("Calcular", key="calcular_4"):
-            semanas, dias, mensaje, fpp_str = calcular_desde_manual(semanas_manual, dias_manual)
-    
-    if mensaje:
-        if "Error" in mensaje:
-            st.error(mensaje)
-        else:
-            st.success(mensaje)
-            st.subheader("Fechas de hitos en orden cronológico")
-            hitos = generar_hitos(semanas, dias, hoy)
-            for hito in hitos:
-                st.write(hito)
+    else:
+        # Mostrar resultados
+        st.success(st.session_state.mensaje)
+        
+        st.subheader("Fechas de hitos en orden cronológico")
+        
+        # Convertir hitos a DataFrame para tabla elegante
+        hitos_data = [{"Hito": hito} for hito in st.session_state.hitos]
+        df = pd.DataFrame(hitos_data)
+        
+        # Estilizar la tabla
+        st.dataframe(
+            df.style.set_table_styles(
+                [
+                    {'selector': 'tr:hover', 'props': [('background-color', '#ffff99')]},
+                    {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white')]},
+                    {'selector': 'td', 'props': [('border', '1px solid #ddd'), ('padding', '8px')]},
+                ]
+            ).set_properties(**{'text-align': 'left'}),
+            hide_index=True,
+            use_container_width=True
+        )
+        
+        # Botón para realizar otro cálculo
+        if st.button("Realizar otro cálculo"):
+            st.session_state.calculated = False
+            st.session_state.mensaje = ""
+            st.session_state.hitos = []
+            st.rerun()  # Reiniciar la app para mostrar el menú principal
 
 if __name__ == "__main__":
     main()
